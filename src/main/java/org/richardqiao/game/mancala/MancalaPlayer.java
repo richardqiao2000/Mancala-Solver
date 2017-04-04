@@ -1,5 +1,7 @@
 package org.richardqiao.game.mancala;
 
+import java.util.Date;
+
 public class MancalaPlayer {
 
   public int[] pockets;
@@ -93,6 +95,20 @@ public class MancalaPlayer {
     pockets[Constant.CUP_AMOUNT - 1] -= eggs + 1;
   }
   
+  public int winOrLose(){ //0: draw; 1: win; 2: lose; -1: unknown
+    int total = getTotal();
+    if(isEmpty()){
+      if(total > Constant.EGG_TOTAL){
+        return 1;
+      }else if(total == Constant.EGG_AMOUNT){
+        return 0;
+      }
+      return 2;
+    }
+    if(pockets[Constant.CUP_AMOUNT - 1] > Constant.EGG_TOTAL) return 1;
+    return -1;
+  }
+  
   public boolean isEmpty(){
     for(int i = 0; i < pockets.length - 1; i++){
       if(pockets[i] > 0) return false;
@@ -119,7 +135,7 @@ public class MancalaPlayer {
     int draw = -1;
     State state = new State(board.p1, board.p2, this.turn);
     int result = 0;
-    for(int i = 0; i < pockets.length - 1; i++){
+    for(int i = pockets.length - 2; i >= 0; i--){
       if(pockets[i] == 0) continue;
       cur = i;
       MancalaPlayer pl1 = new MancalaPlayer(state, 1);
@@ -138,7 +154,11 @@ public class MancalaPlayer {
       }else{
         next = new State(pl1, pl2, opp.turn);
       }
+      Constant.date = new Date();
       result = next.whoWin(board.map);
+      long diff = new Date().getTime() - Constant.date.getTime();
+      if(diff > Constant.SEARCH_TIME) break;
+      
       if(result == 0){
         draw = i;
       }else if(result == this.turn){

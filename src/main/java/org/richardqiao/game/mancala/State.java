@@ -1,6 +1,6 @@
 package org.richardqiao.game.mancala;
 
-import java.util.HashMap;
+import java.util.Date;
 import java.util.Map;
 
 public class State {
@@ -27,11 +27,17 @@ public class State {
   }
   
   public int whoWin(Map<State, Integer> map){
+    if(Constant.SEARCH_TIME != 0l){
+      long diff = new Date().getTime() - Constant.date.getTime();
+      if(diff > Constant.SEARCH_TIME) return 0;
+    }
     if(map.containsKey(this)){
       return map.get(this);
     }
+
     boolean winOnce = false;
     boolean drawOnce = false;
+    int oppTurn = this.turn == 1 ? 2 : 1;
     for(int i = 0; i < Constant.CUP_AMOUNT - 1; i++){
       MancalaPlayer pl1 = new MancalaPlayer(this, 1);
       MancalaPlayer pl2 = new MancalaPlayer(this, 2);
@@ -41,44 +47,27 @@ public class State {
       MancalaPlayer opp = p.getOpp();
       
       int res = 0;
-      if(p.isEmpty() || opp.isEmpty()){
-        if(p.getTotal() > Constant.EGG_TOTAL){
-          res = this.turn;
-        }else if(p.getTotal() == Constant.EGG_TOTAL){
-          res = 0;
-        }else{
-          res = opp.turn;
-        }
+      res = winJudge(p, opp, this.turn);
+      if(res != -1){
         map.put(this, res);
         return res;
       }
+      
       if(p.pockets[i] == 0) continue;
       int endAt = p.scoopPocket(i);
-      if(p.isEmpty() || opp.isEmpty()){
-        if(p.getTotal() > Constant.EGG_TOTAL){
-          res = this.turn;
-        }else if(p.getTotal() == Constant.EGG_TOTAL){
-          res = 0;
-        }else{
-          res = opp.turn;
-        }
-      }else if(endAt == Constant.CUP_AMOUNT - 1){
-        res = new State(pl1, pl2, this.turn).whoWin(map);
-      }else if(endAt >= 0 && p.pockets[endAt] == 1){
-        p.gainEggs(endAt);
-        if(p.isEmpty() || opp.isEmpty()){
-          if(p.getTotal() > Constant.EGG_TOTAL){
-            res = this.turn;
-          }else if(p.getTotal() == Constant.EGG_TOTAL){
-            res = 0;
-          }else{
-            res = opp.turn;
+      res = winJudge(p, opp, this.turn);
+      if(res == -1){
+        if(endAt == Constant.CUP_AMOUNT - 1){
+          res = new State(pl1, pl2, this.turn).whoWin(map);
+        }else if(endAt >= 0 && p.pockets[endAt] == 1){
+          p.gainEggs(endAt);
+          res = winJudge(p, opp, this.turn);
+          if(res == -1){
+            res = new State(pl1, pl2, oppTurn).whoWin(map);
           }
         }else{
-          res = new State(pl1, pl2, this.turn == 1 ? 2 : 1).whoWin(map);
+          res = new State(pl1, pl2, oppTurn).whoWin(map);
         }
-      }else{
-        res = new State(pl1, pl2, this.turn == 1 ? 2 : 1).whoWin(map);
       }
       if(res == this.turn){
         winOnce = true;
@@ -92,9 +81,18 @@ public class State {
     }else if(drawOnce){
       map.put(this, 0);
     }else{
-      map.put(this, this.turn == 1 ? 2 : 1);
+      map.put(this, oppTurn);
     }
     return map.get(this);
+  }
+  
+  private int winJudge(MancalaPlayer p, MancalaPlayer opp, int turn){ // 0: draw, 1: p1 win, 2: p2 win, -1: unknow 
+    int pWin = p.winOrLose();//0: draw; 1: win; 2: lose; -1: unknown
+    int oppWin = opp.winOrLose();
+    if(pWin == 1 || oppWin == 2) return turn;
+    if(oppWin == 1 || pWin == 2) return turn == 1 ? 2 : 1;
+    if(pWin == 0 || oppWin == 0) return 0;
+    return -1;
   }
   
   public String toString(){
@@ -140,6 +138,7 @@ public class State {
     //board.p1.pockets = new int[]{0,0,2,10};
     //board.p2.pockets = new int[]{3,0,1,8};
     State state = new State(p1, p2, 1);
+    Constant.date = new Date();
     int res = state.whoWin(board.map);
     System.out.print("Result: ");
     System.out.print(res == 0 ? "Draw" : res == 1 ? "p1" : "p2");
