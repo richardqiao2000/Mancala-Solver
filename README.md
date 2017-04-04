@@ -17,3 +17,12 @@ About the game: https://en.wikipedia.org/wiki/Mancala
 * Count all the pieces in each store. The winner is the player with the most pieces.
 
 This solver to check the best move to win the game.
+
+### Start the game
+* open your console and cd to directory /target
+* run command java -jar mancala.jar
+* you are the player2, and put the index number to scoop eggs
+* Enjoy!
+
+### Solver
+* Run State.main 
