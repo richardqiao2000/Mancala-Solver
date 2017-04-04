@@ -41,6 +41,7 @@ public class State {
     return new State(s2, s1, turn == 1 ? 2 : 1);
   }
   
+
   public int whoWin(Map<State, Integer> map, Set<State> set){
     //System.out.println(this);
     /*
@@ -107,6 +108,7 @@ public class State {
       }else if(res == 0){
         drawOnce = true;
       }
+      //System.out.println(new State(pl1, pl2, this.turn));
     }
     if(winOnce){
       map.put(this, this.turn);
@@ -129,20 +131,58 @@ public class State {
     return -1;
   }
   
+  private String formatString(int val){
+    String str = String.valueOf(val);
+    str = str + "   ";
+    str = str.substring(0, 4);
+    return str;
+  }
+  
+  private String formatString(String str){
+    str = str + "   ";
+    str = str.substring(0, 4);
+    return str;
+  }
+  
   public String toString(){
     StringBuilder sb = new StringBuilder();
     sb.append("Player "+ turn +"'s turn:\n");
-    for(int i = s1.length - 1; i >= 0; i--){
-      sb.append(" " + s1[i] + " " + "\t");
+
+    //line 1
+    sb.append("    ");
+    for(int i = s1.length - 2; i >= 0; i--){
+      sb.append(formatString(s1[i]));
     }
-    sb.append("\n\t");
-    for(int n: s2){
-      sb.append(" " + n + " " + "\t");
+    sb.append('\n');
+    
+    //line 2
+    sb.append(formatString(s1[s1.length - 1]));
+    for(int i = s1.length - 2; i >= 0; i--){
+      sb.append("    ");
     }
-    sb.append("\n\t");
+    sb.append(formatString(s2[s2.length - 1]));
+    sb.append("\n");
+    
+    //line 3
+    sb.append("    ");
     for(int i = 0; i < s2.length - 1; i++){
-      sb.append("[" + (i + 1) + "]" + "\t");
+      sb.append(formatString(s2[i]));
     }
+    sb.append("\n");
+
+    //Line 4
+    sb.append("    ");
+    for(int i = 0; i < s2.length - 1; i++){
+      sb.append(formatString("^"));
+    }
+    sb.append('\n');
+    
+    //Line 5
+    sb.append("    ");
+    for(int i = 0; i < s2.length - 1; i++){
+      sb.append(formatString(i + 1));
+    }
+    sb.append('\n');
     return sb.toString();
   }
   
