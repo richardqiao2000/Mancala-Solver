@@ -1,13 +1,13 @@
 package org.richardqiao.game.mancala;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class Board {
 
   public MancalaPlayer p1;
   public MancalaPlayer p2;
   public Map<State, Integer> map = new HashMap<State, Integer>();
+  public Set<State> set = new HashSet<State>();
 
   public Board(){
     p1 = new MancalaPlayer(1);

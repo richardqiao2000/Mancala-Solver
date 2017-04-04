@@ -100,7 +100,7 @@ public class MancalaPlayer {
     if(isEmpty()){
       if(total > Constant.EGG_TOTAL){
         return 1;
-      }else if(total == Constant.EGG_AMOUNT){
+      }else if(total == Constant.EGG_TOTAL){
         return 0;
       }
       return 2;
@@ -154,10 +154,10 @@ public class MancalaPlayer {
       }else{
         next = new State(pl1, pl2, opp.turn);
       }
-      Constant.date = new Date();
-      result = next.whoWin(board.map);
-      long diff = new Date().getTime() - Constant.date.getTime();
-      if(diff > Constant.SEARCH_TIME) break;
+      //Constant.date = new Date();
+      result = next.whoWin(board.map, board.set);
+      //long diff = new Date().getTime() - Constant.date.getTime();
+      //if(diff > Constant.SEARCH_TIME) break;
       
       if(result == 0){
         draw = i;

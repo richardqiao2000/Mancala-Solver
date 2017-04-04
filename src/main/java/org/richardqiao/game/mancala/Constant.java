@@ -3,7 +3,7 @@ package org.richardqiao.game.mancala;
 import java.util.Date;
 
 public class Constant {
-  public static final int CUP_AMOUNT = 5; // 0-5:pockets; 6: mancala
+  public static final int CUP_AMOUNT = 4; // 0-5:pockets; 6: mancala
   public static final int EGG_AMOUNT = 4;
   public static final int EGG_TOTAL = EGG_AMOUNT * (CUP_AMOUNT - 1);
   public static Date date = new Date();

@@ -28,31 +28,38 @@ public class Game {
       
       
       String input = System.console().readLine();
-      int move = Integer.valueOf(input);
+      int move = Integer.valueOf(input) - 1;
+      while(p2.pockets[move] == 0){
+        System.out.println(new State(p1, p2, 2));
+        input = System.console().readLine();
+        move = Integer.valueOf(input) - 1;
+      }
       endAt = p2.scoopPocket(move);
       while(!p1.isEmpty() && !p2.isEmpty() && endAt == Constant.CUP_AMOUNT - 1){
         System.out.println(new State(p1, p2, 2));
         input = System.console().readLine();
-        move = Integer.valueOf(input);
-        endAt = p2.scoopPocket(move);
+        move = Integer.valueOf(input) - 1;
+        if(p2.pockets[move] != 0){
+          endAt = p2.scoopPocket(move);
+        }
       }
       if(endAt >= 0 && p2.pockets[endAt] == 1){
         p2.gainEggs(endAt);
       }
       
       
-      /*
-      endAt = p2.scoopPocketWithAI();
-      while(endAt == Constant.CUP_AMOUNT - 1){
-        System.out.println(new State(board, 2));
-        endAt = p2.scoopPocketWithAI();
-      }
-      if(endAt >= 0 && board.p1.pockets[endAt] == 1){
-        System.out.println(new State(board, 2));
-        board.p2.gainEggs(endAt);
-      }
-      System.out.println(new State(board, 1));
-      */
+//      
+//      endAt = p2.scoopPocketWithAI();
+//      while(endAt == Constant.CUP_AMOUNT - 1){
+//        System.out.println(new State(board, 2));
+//        endAt = p2.scoopPocketWithAI();
+//      }
+//      if(endAt >= 0 && board.p1.pockets[endAt] == 1){
+//        System.out.println(new State(board, 2));
+//        board.p2.gainEggs(endAt);
+//      }
+//      System.out.println(new State(board, 1));
+//      
     }
     System.out.println(new State(p1, p2, 2));
     if(p1.getTotal() == p2.getTotal()){
